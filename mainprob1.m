@@ -1,0 +1,84 @@
+clear all;
+close all;
+clc;
+
+fprintf('+------------------------------------------------------------------------+\n');
+fprintf('|                         INTELIGÊNCIA COMPUTACIONAL                     |\n');
+fprintf('|                              REDE ADALINE                              |\n');
+fprintf('|                         (Prof. Renato Dourado Maia)                    |\n');
+fprintf('|                     Acadêmico: Felipe Túlio de Castro                  |\n');
+fprintf('|                                  FACIT                                 |\n');
+fprintf('+------------------------------------------------------------------------+\n');
+
+disp(' ');
+disp(' ');
+disp('PROBLEMA 1 - CLASSIFICAÇÃO');
+disp(' ');
+disp(' ');
+disp('Pressione qualquer tecla para o processamento inicie..');
+disp(' ')
+pause
+
+disp('Esta é a primeira execução da rede. O perceptron será treinado...');
+
+[XTreino,YTreino, XValidacao, YValidacao] = OrganizaDados;
+
+for i = 1 : 5
+    [W vetordeErrosLineares vetordeErrosClassif Wretorno epoca numPadroes] = treino(0.0025, XTreino, YTreino, 0.000001);
+
+    disp('__________________________________________________________________ ')
+    disp(' Resultados do treinamento:')
+    disp(' ')
+    fprintf('   >>> O valor inicial para o bias foi  : %f\n', Wretorno(1))
+    fprintf('   >>> O valor inicial para o peso 1 foi: %f\n', Wretorno(2))
+    fprintf('   >>> O valor inicial para o peso 2 foi: %f\n', Wretorno(3))
+    fprintf('   >>> O valor inicial para o peso 3 foi: %f\n', Wretorno(4))
+    fprintf('   >>> O valor inicial para o peso 4 foi: %f\n', Wretorno(5))
+
+    disp('__________________________________________________________________ ')
+    disp(' ');
+    disp(' ');
+    disp(' ');
+    fprintf('   >>> O valor obtido para o bias foi  : %f\n', W(1))
+    fprintf('   >>> O valor obtido para o peso 1 foi: %f\n', W(2))
+    fprintf('   >>> O valor obtido para o peso 2 foi: %f\n', W(3))
+    fprintf('   >>> O valor obtido para o peso 3 foi: %f\n', W(4))
+    fprintf('   >>> O valor obtido para o peso 4 foi: %f\n', W(5))
+
+    disp('__________________________________________________________________ ')
+    disp(' ');
+    disp('');
+    fprintf('   >>> A quantidade de épocas necessárias foram: %d\n', epoca)
+    disp('');
+    disp('');
+
+disp('');
+disp('---------------------------------------------------------------------------');
+disp('');
+
+        %plota o gráfico de erros lineares
+        plotarErros(vetordeErrosLineares);
+        
+        %chama da função de executa a rede com os dados de teste
+        Yteste = yteste(W);
+        
+        %plota o vetor de erros de classificação
+        plotarErrosClassif(vetordeErrosClassif);
+
+        cont = 0;
+      
+        %executa a função de validação da rede Adaline
+        Y = yadaline(XValidacao, W);
+        
+        %faz a verificação do percentual de acertos da rede após a
+        %validação
+        Resultado = (Y == YValidacao);
+        Verifica = find(Resultado==1);
+        Quantidade = length (Verifica);
+        perc = (Quantidade * 100)/15;
+        disp('');
+        disp('');
+        fprintf('A rede acertou: %6.4f%%\n', perc);
+    
+end
+    

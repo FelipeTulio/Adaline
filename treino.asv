@@ -1,0 +1,84 @@
+function [W vetordeErrosLineares vetordeErrosClassif Wretorno epoca numPadroes] = treino(taxaAprendizado, X, Yd, E )
+
+%Inicialização dos dados
+
+%numPadroes é uma variável que guarda o número de colunas da matriz de
+%entrada. Neste caso, cada coluna representa um padrão.
+numPadroes = size(X,2);
+
+%dimensao é uma variável que armazena a quantidade de linhas neste caso.
+%Ela representa o valor de dimensões que os padrões possuem.
+dimensao = size(X,1);
+
+
+%Polarização da matriz X (inserção do bias)
+pol = ones(1,numPadroes);
+X = [pol; X ];
+
+%Declaração randômica do vetor de pesos (W) e inserção do bias
+%Wlimite = 0.5;
+W = rand(1, dimensao);
+bias = rand(1,1);
+%junção dos valores obtidos acima
+W = [bias W];
+Wretorno = W;
+
+%Declaração de variáveis de controle
+epoca = 0;
+vetordeErrosLineares = [];
+vetordeErrosClassif = [];
+erroEpoca = 1;
+erroEpocaAnterior = 0;
+
+%laço de treino
+%erroEpoca > E && epoca ~= maxEpocas
+while(abs(erroEpoca-erroEpocaAnterior) > E)
+    
+    erroEpocaAnterior = erroEpoca;
+    erroEpoca = 0;
+    erroEpocaClassif =0;
+    
+    
+    %A variável indice é um vetor gerado randomicamente de tamanho igual a quantidade de
+    %padrões de entrada, usado para apresentar à rede os padrões de forma
+    %aleatória.
+    indice = randperm(numPadroes);
+    
+    %laço que faz o treinamento supervisionado
+    for i = 1 : numPadroes
+        
+        %executa cálculo para descobrir o valor de U
+        U = W * X(:,indice(i)');
+        
+        erroLinear = Yd(indice(i)) - U;
+        
+        if (U >= 0)
+            Y = 1;
+        elseif (U < 0)
+            Y = -1;
+        end
+        
+        %calcula o erro de classificação
+        erroClassif = (Yd(indice(i)) - Y)~= 0
+        
+        %calcula e atualiza o novo vetor de W
+        W = W + (taxaAprendizado * erroLinear * X(:,indice(i))');
+        
+        %atualiza o erro quadrático da época
+        erroEpoca = erroEpoca + (erroLinear^2);
+        
+        erroEpocaClassif = erroEpocaClassif + erroClassif;
+        
+    end
+    
+    erroEpoca=erroEpoca/numPadroes;
+    %guarda o erro da época no vetor de erros
+    vetordeErrosLineares = [vetordeErrosLineares; erroEpoca];
+    vetordeErrosClassif 
+    epoca = epoca + 1;
+
+    
+end
+
+end
+
